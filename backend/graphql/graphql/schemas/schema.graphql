@@ -1,0 +1,46 @@
+type User {
+  id: ID!
+  address: String!
+  username: String!
+  bio: String
+  avatar: String
+  followers: [User!]
+  following: [User!]
+  posts: [Post!]
+}
+
+type Post {
+  id: ID!
+  content: String!
+  author: User!
+  createdAt: String!
+  likes: Int!
+  comments: [Comment!]
+  nftAddress: String
+}
+
+type Comment {
+  id: ID!
+  content: String!
+  author: User!
+  post: Post!
+  createdAt: String!
+}
+
+type Query {
+  me: User
+  user(address: String!): User
+  users: [User!]!
+  post(id: ID!): Post
+  posts: [Post!]!
+  feed: [Post!]!
+}
+
+type Mutation {
+  updateProfile(username: String, bio: String, avatar: String): User!
+  createPost(content: String!, nftAddress: String): Post!
+  likePost(postId: ID!): Post!
+  addComment(postId: ID!, content: String!): Comment!
+  follow(address: String!): User!
+  unfollow(address: String!): User!
+} 

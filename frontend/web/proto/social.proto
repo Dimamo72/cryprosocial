@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package social;
+
+service SocialService {
+  rpc GetUser (GetUserRequest) returns (User);
+  rpc CreatePost (CreatePostRequest) returns (Post);
+  rpc GetFeed (GetFeedRequest) returns (PostList);
+  rpc LikePost (LikePostRequest) returns (Post);
+  rpc CommentPost (CommentPostRequest) returns (Comment);
+  rpc MintPostNFT (MintPostNFTRequest) returns (NFTResponse);
+}
+
+message User {
+  string id = 1;
+  string address = 2;
+  string username = 3;
+  optional string bio = 4;
+  optional string avatar = 5;
+}
+
+message Post {
+  string id = 1;
+  string content = 2;
+  User author = 3;
+  string created_at = 4;
+  int32 likes_count = 5;
+  repeated Comment comments = 6;
+  optional string nft_address = 7;
+}
+
+message Comment {
+  string id = 1;
+  string content = 2;
+  User author = 3;
+  string created_at = 4;
+}
+
+message GetUserRequest {
+  string address = 1;
+}
+
+message GetUserResponse {
+  User user = 1;
+}
+
+message CreatePostRequest {
+  string content = 1;
+  optional string nft_address = 2;
+}
+
+message GetFeedRequest {
+  int32 limit = 1;
+  int32 offset = 2;
+}
+
+message PostList {
+  repeated Post posts = 1;
+  int32 total = 2;
+}
+
+message LikePostRequest {
+  string post_id = 1;
+}
+
+message CommentPostRequest {
+  string post_id = 1;
+  string content = 2;
+}
+
+message MintPostNFTRequest {
+  string post_id = 1;
+}
+
+message NFTResponse {
+  string transaction_hash = 1;
+  string nft_address = 2;
+  string token_id = 3;
+} 

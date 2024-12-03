@@ -1,0 +1,107 @@
+# Dependencies
+node_modules/
+/.pnp
+.pnp.js
+
+# Testing
+/coverage
+/coverage.json
+
+# Next.js
+/.next/
+/out/
+.next/
+
+# Production
+/build
+/dist
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.prod
+.secret
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker volumes
+docker/data/
+
+# Prisma
+/prisma/migrations/
+/prisma/*.db
+
+# Cache
+.cache/
+.npm/
+
+# Build artifacts
+*.tsbuildinfo
+
+# Hardhat files
+/cache
+/artifacts
+.openzeppelin/unknown-*.json
+
+# TypeChain files
+/typechain
+/typechain-types
+
+# Hardhat Ignition deployments
+ignition/deployments/chain-31337
+
+# Blockchain specific
+/deployments
+.secret
+mnemonic.txt
+private-keys.txt
+account-keys.json
+**/artifacts
+**/build
+**/cache
+**/.coverage_artifacts
+**/.coverage_cache
+**/.coverage_contracts
+/packages/subgraph/generated
+/packages/subgraph/abis/*
+/tenderly.yaml
+
+# DAO specific
+/governance
+/proposals/deployed
+/proposals/pending
+
+# IPFS
+.ipfs/
+
+# Wallet files
+*.wallet
+keystore/
+UTC--*
+
+# Contract verification
+.verify-*
+flatten/
+
+# Gas reporter
+/gas-report.txt
+
+# Deployment artifacts
+deployed-contracts.json
+deployment-log.json

@@ -1,0 +1,103 @@
+syntax = "proto3";
+
+package social;
+
+service SocialService {
+  // User operations
+  rpc GetUser (GetUserRequest) returns (User);
+  rpc UpdateUser (UpdateUserRequest) returns (User);
+  rpc GetUserPosts (GetUserPostsRequest) returns (PostList);
+
+  // Post operations
+  rpc CreatePost (CreatePostRequest) returns (Post);
+  rpc GetPost (GetPostRequest) returns (Post);
+  rpc LikePost (LikePostRequest) returns (Post);
+  rpc CommentPost (CommentPostRequest) returns (Comment);
+
+  // Feed operations
+  rpc GetFeed (GetFeedRequest) returns (PostList);
+
+  // NFT operations
+  rpc MintPostNFT (MintPostNFTRequest) returns (NFTResponse);
+}
+
+message User {
+  string id = 1;
+  string address = 2;
+  string username = 3;
+  optional string bio = 4;
+  optional string avatar = 5;
+}
+
+message Post {
+  string id = 1;
+  string content = 2;
+  User author = 3;
+  string created_at = 4;
+  int32 likes_count = 5;
+  repeated Comment comments = 6;
+  optional string nft_address = 7;
+}
+
+message Comment {
+  string id = 1;
+  string content = 2;
+  User author = 3;
+  string post_id = 4;
+  string created_at = 5;
+}
+
+message GetUserRequest {
+  string address = 1;
+}
+
+message UpdateUserRequest {
+  string address = 1;
+  optional string username = 2;
+  optional string bio = 3;
+  optional string avatar = 4;
+}
+
+message GetUserPostsRequest {
+  string address = 1;
+  int32 limit = 2;
+  int32 offset = 3;
+}
+
+message CreatePostRequest {
+  string content = 1;
+  optional string nft_address = 2;
+}
+
+message GetPostRequest {
+  string id = 1;
+}
+
+message LikePostRequest {
+  string post_id = 1;
+}
+
+message CommentPostRequest {
+  string post_id = 1;
+  string content = 2;
+}
+
+message GetFeedRequest {
+  int32 limit = 1;
+  int32 offset = 2;
+}
+
+message PostList {
+  repeated Post posts = 1;
+  int32 total = 2;
+}
+
+message MintPostNFTRequest {
+  string post_id = 1;
+}
+
+message NFTResponse {
+  string transaction_hash = 1;
+  string nft_address = 2;
+  string token_id = 3;
+} 

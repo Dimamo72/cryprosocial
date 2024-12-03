@@ -1,0 +1,98 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: cryptosocial_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      
+      redis:
+        image: redis:6
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: Setup Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.19'
+    
+    - name: Install dependencies
+      run: |
+        cd frontend/web && npm install
+        cd ../../backend/nest && npm install
+    
+    - name: Run tests
+      run: |
+        cd frontend/web && npm test
+        cd ../../backend/nest && npm test
+        cd ../go-services && go test ./...
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/cryptosocial_test
+        REDIS_URL: redis://localhost:6379
+    
+    - name: Build
+      run: |
+        cd frontend/web && npm run build
+        cd ../../backend/nest && npm run build
+
+  deploy:
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Configure SSH
+      uses: webfactory/ssh-agent@v0.7.0
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+    
+    - name: Add known hosts
+      run: |
+        mkdir -p ~/.ssh
+        ssh-keyscan -H ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
+    
+    - name: Deploy to production
+      env:
+        DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+        DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+      run: |
+        scp docker-compose.prod.yml $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/
+        scp .env.prod $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/.env
+        ssh $DEPLOY_USER@$DEPLOY_HOST "cd $DEPLOY_PATH && docker-compose -f docker-compose.prod.yml pull && docker-compose -f docker-compose.prod.yml up -d"

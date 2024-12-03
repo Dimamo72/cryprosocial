@@ -1,0 +1,37 @@
+{
+  "name": "cryptosocial",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "frontend/web",
+    "frontend/mobile",
+    "backend/nest",
+    "backend/graphql",
+    "backend/grpc",
+    "blockchain/contracts"
+  ],
+  "scripts": {
+    "dev": "npm-run-all --parallel dev:*",
+    "dev:web": "npm run dev --workspace=@cryptosocial/web",
+    "dev:backend": "npm run start:dev --workspace=@cryptosocial/backend",
+    "dev:contracts": "npm run compile --workspace=@cryptosocial/contracts",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present"
+  },
+  "devDependencies": {
+    "npm-run-all": "^4.1.5"
+  },
+  "dependencies": {
+    "@chakra-ui/react": "^3.2.2",
+    "@emotion/react": "^11.13.5",
+    "@emotion/styled": "^11.13.5",
+    "@types/ioredis": "^4.28.10",
+    "@types/next": "^8.0.7",
+    "@wagmi/core": "^2.15.2",
+    "framer-motion": "^11.12.0",
+    "ioredis": "^5.4.1",
+    "next": "^15.0.3",
+    "wagmi": "^2.13.3"
+  }
+}
